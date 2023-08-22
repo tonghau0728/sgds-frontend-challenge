@@ -21,7 +21,6 @@ export type BadgeVariant =
 export class MyBadge extends BaseElement {
   static styles = [BaseElement.styles, styles];
 
-
   render() {
     return html`
       <span class="badge bg-primary">

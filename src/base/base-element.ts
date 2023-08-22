@@ -1,5 +1,6 @@
 import { LitElement } from "lit";
 import styles from "./base-element.scss";
+
 export default class BaseElement extends LitElement {
   static styles = styles;
   /** Emits a custom event with more convenient defaults. */

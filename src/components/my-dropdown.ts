@@ -5,7 +5,7 @@ import { property, query, state } from "lit/decorators.js";
 import { Ref, createRef } from "lit/directives/ref.js";
 import { MyDropdownItem } from "./my-dropdown-item";
 import BaseElement from "../base/base-element";
-import styles from "./my-dropdown.scss"
+import styles from "./my-dropdown.scss";
 
 const ARROW_DOWN = "ArrowDown";
 const ARROW_UP = "ArrowUp";
@@ -50,10 +50,10 @@ export class MyDropdown extends BaseElement {
     {
       name: "offset",
       options: {
-        offset: [0, 10]
-      }
-    }
-  ];;
+        offset: [0, 10],
+      },
+    },
+  ];
 
   firstUpdated() {
     this.bsDropdown = new Dropdown(this.myDropdown.value, {
@@ -61,11 +61,11 @@ export class MyDropdown extends BaseElement {
       reference: "toggle", // working
       popperConfig: (defaultConfig?: Partial<Popper.Options>) => {
         //working
-        defaultConfig.placement = "bottom-start"
-        defaultConfig.modifiers = this.modifierOpt
+        defaultConfig.placement = "bottom-start";
+        defaultConfig.modifiers = this.modifierOpt;
 
         return defaultConfig;
-      }
+      },
     });
 
     this.myDropdown.value.addEventListener("show.bs.dropdown", () => {
@@ -90,11 +90,13 @@ export class MyDropdown extends BaseElement {
 
     this.addEventListener("keydown", this._handleKeyboardEvent);
     if (this.close !== "inside") {
-      this.addEventListener("blur", e => {
+      this.addEventListener("blur", (e) => {
         // when clicking outside of the dropdown component, it becomes null, hide the dropdown
-        return e.relatedTarget === null ? this.bsDropdown.hide() : e.stopPropagation();
+        return e.relatedTarget === null
+          ? this.bsDropdown.hide()
+          : e.stopPropagation();
       });
-      addEventListener("click", e => this._handleClickOutOfElement(e, this));
+      addEventListener("click", (e) => this._handleClickOutOfElement(e, this));
     }
   }
   /** When invoked, opens the dropdown menu */
@@ -116,15 +118,17 @@ export class MyDropdown extends BaseElement {
     this.prevDropdownItemNo = -1;
     // reset the tabindex
     const items = this._getMenuItems();
-    items.forEach(i => {
+    items.forEach((i) => {
       i.removeAttribute("tabindex");
     });
   }
   _getMenuItems(): MyDropdownItem[] {
     // for case when default slot is used e.g. dropdown, mainnavdropdown
     if (this.shadowRoot.querySelector("slot#default")) {
-      return (this.shadowRoot.querySelector("slot#default") as HTMLSlotElement)?.assignedElements({
-        flatten: true
+      return (
+        this.shadowRoot.querySelector("slot#default") as HTMLSlotElement
+      )?.assignedElements({
+        flatten: true,
       }) as MyDropdownItem[];
     }
 
@@ -137,7 +141,7 @@ export class MyDropdown extends BaseElement {
   }
 
   _getActiveMenuItems(): MyDropdownItem[] {
-    return this._getMenuItems().filter(item => !item.disabled);
+    return this._getMenuItems().filter((item) => !item.disabled);
   }
 
   _setMenuItem(currentItemIdx: number, isArrowDown = true) {
@@ -145,14 +149,17 @@ export class MyDropdown extends BaseElement {
     if (items.length === 0) return;
     const item = items[currentItemIdx];
     this.nextDropdownItemNo = currentItemIdx + 1;
-    this.prevDropdownItemNo = currentItemIdx - 1 < 0 ? items.length - 1 : currentItemIdx - 1;
+    this.prevDropdownItemNo =
+      currentItemIdx - 1 < 0 ? items.length - 1 : currentItemIdx - 1;
     let activeItem: MyDropdownItem;
     if (item.disabled) {
-      return this._setMenuItem(isArrowDown ? this.nextDropdownItemNo : this.prevDropdownItemNo);
+      return this._setMenuItem(
+        isArrowDown ? this.nextDropdownItemNo : this.prevDropdownItemNo
+      );
     } else activeItem = item;
 
     // focus or blur items depending on active or not
-    items.forEach(i => {
+    items.forEach((i) => {
       i.setAttribute("tabindex", i === activeItem ? "0" : "-1");
       i === activeItem && i.focus();
     });
@@ -162,7 +169,8 @@ export class MyDropdown extends BaseElement {
     const items = this._getActiveMenuItems();
     const currentItemNo = items.indexOf(e.target as MyDropdownItem);
     this.nextDropdownItemNo = currentItemNo + 1;
-    this.prevDropdownItemNo = currentItemNo <= 0 ? items.length - 1 : currentItemNo - 1;
+    this.prevDropdownItemNo =
+      currentItemNo <= 0 ? items.length - 1 : currentItemNo - 1;
 
     /** Emitted event from SgdsDropdown element when a slot item is selected */
     const selectedItem = e.target as MyDropdownItem;
@@ -180,7 +188,9 @@ export class MyDropdown extends BaseElement {
         if (this.nextDropdownItemNo === menuItems.length) {
           return this._setMenuItem(0);
         } else {
-          return this._setMenuItem(this.nextDropdownItemNo > 0 ? this.nextDropdownItemNo : 0);
+          return this._setMenuItem(
+            this.nextDropdownItemNo > 0 ? this.nextDropdownItemNo : 0
+          );
         }
       case ARROW_UP:
         e.preventDefault();

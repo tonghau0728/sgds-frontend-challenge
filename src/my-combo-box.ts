@@ -50,7 +50,7 @@ export class MyComboBox extends MyDropdown {
 
   /** When clicked on any part of div-looking input, the embedded input is focus.  */
   private _handleToggleUserInput(e: CustomEvent) {
-    e.stopPropagation()
+    e.stopPropagation();
     this._onClickDropdownToggle();
     this.userInputElement.focus();
   }
@@ -66,7 +66,7 @@ export class MyComboBox extends MyDropdown {
           ${ref(this.myDropdown)}
           class="form-control"
         >
-         <my-badge>Sample badge (to be replaced)</my-badge>
+          <my-badge>Sample badge (to be replaced)</my-badge>
           <input
             id="user-input"
             class="form-control-multiselect"

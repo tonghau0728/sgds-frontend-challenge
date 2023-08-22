@@ -1,11 +1,11 @@
 import { html } from "lit";
 import { query, property, customElement } from "lit/decorators.js";
 import BaseElement from "../base/base-element";
-import styles from "./my-dropdown-item.scss"
+import styles from "./my-dropdown-item.scss";
 
 @customElement("my-dropdown-item")
 export class MyDropdownItem extends BaseElement {
-  static styles =  [BaseElement.styles,styles];
+  static styles = [BaseElement.styles, styles];
 
   /**@internal */
   @query("a")
