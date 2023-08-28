@@ -40,16 +40,27 @@ export class MyComboBox extends MyDropdown {
   @state()
   selectedItems: string[] = [];
 
+  private debounceTimer: ReturnType<typeof setTimeout> | null = null;
+
   private _handleInputChange(e: KeyboardEvent) {
+    // Clear the previous debounce timer
+    if (this.debounceTimer !== null) {
+      clearTimeout(this.debounceTimer);
+    }
+
     this.showMenu();
     this.value = (e.target as HTMLInputElement).value;
-    const valueLower = this.value.toLowerCase();
-    const menuIndexLookup = this.filteredMenuList.findIndex(
-      (item) => item.toLowerCase() === valueLower
-    );
-    if (menuIndexLookup >= 0) {
-      this._handleMenuSelection(e, this.filteredMenuList[menuIndexLookup]);
-    }
+
+    // Set debounce timer to reduce amount of lookups to the menu list
+    this.debounceTimer = setTimeout(() => {
+      const valueLower = this.value.toLowerCase();
+      const menuIndexLookup = this.filteredMenuList.findIndex(
+        (item) => item.toLowerCase() === valueLower
+      );
+      if (menuIndexLookup >= 0) {
+        this._handleMenuSelection(e, this.filteredMenuList[menuIndexLookup]);
+      }
+    }, 300);
   }
 
   private _handleSelectChange(e: KeyboardEvent | MouseEvent) {
