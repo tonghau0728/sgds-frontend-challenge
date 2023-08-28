@@ -71,6 +71,17 @@ export class MyComboBox extends MyDropdown {
     this.userInputElement.focus();
   }
 
+  /** The function used to determine if entered backspace should remove the badge */
+  private _handleBadgeRemove(
+    e: KeyboardEvent | MouseEvent,
+    selectedItem: string
+  ) {
+    e.stopPropagation();
+    this.selectedItems = this.selectedItems.filter(
+      (item) => item !== selectedItem
+    );
+  }
+
   render() {
     this.filteredMenuList = this.menuList.filter(
       (item) =>
@@ -85,7 +96,12 @@ export class MyComboBox extends MyDropdown {
           class="form-control"
         >
           ${this.selectedItems.map(
-            (selectedItem) => html` <my-badge>${selectedItem}</my-badge> `
+            (selectedItem) => html`
+              <my-badge
+                @click=${(e) => this._handleBadgeRemove(e, selectedItem)}
+                >${selectedItem}</my-badge
+              >
+            `
           )}
           <input
             id="user-input"
