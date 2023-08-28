@@ -35,17 +35,33 @@ export class MyComboBox extends MyDropdown {
   @state()
   filteredMenuList: string[] = [];
 
-  private _handleInputChange(e: CustomEvent) {
+  @state()
+  selectedItems: string[] = [];
+
+  private _handleInputChange(e: KeyboardEvent) {
     this.showMenu();
     this.value = (e.target as HTMLInputElement).value;
-    this.filteredMenuList = this.menuList.filter((item) =>
-      this.filterMenu(this.value, item)
+    const valueLower = this.value.toLowerCase();
+    const menuIndexLookup = this.filteredMenuList.findIndex(
+      (item) => item.toLowerCase() === valueLower
     );
+    if (menuIndexLookup >= 0) {
+      this._handleMenuSelection(e, this.filteredMenuList[menuIndexLookup]);
+    }
   }
 
   private _handleSelectChange(e: KeyboardEvent | MouseEvent) {
-    this.value = (e.target as MyDropdownItem).innerText;
+    const selectedItemText = (e.target as MyDropdownItem).innerText;
+    this._handleMenuSelection(e, selectedItemText);
+  }
+
+  private _handleMenuSelection(
+    e: KeyboardEvent | MouseEvent,
+    selectedItemText: string
+  ) {
+    this.selectedItems = [...this.selectedItems, selectedItemText];
     this._handleSelectSlot(e);
+    this.value = "";
   }
 
   /** When clicked on any part of div-looking input, the embedded input is focus.  */
@@ -56,9 +72,11 @@ export class MyComboBox extends MyDropdown {
   }
 
   render() {
-    this.filteredMenuList = this.menuList.filter((item) =>
-      this.filterMenu(this.value, item)
+    this.filteredMenuList = this.menuList.filter(
+      (item) =>
+        this.filterMenu(this.value, item) && !this.selectedItems.includes(item)
     );
+
     return html`
       <div class="combobox dropdown multiselect">
         <div
@@ -66,7 +84,9 @@ export class MyComboBox extends MyDropdown {
           ${ref(this.myDropdown)}
           class="form-control"
         >
-          <my-badge>Sample badge (to be replaced)</my-badge>
+          ${this.selectedItems.map(
+            (selectedItem) => html` <my-badge>${selectedItem}</my-badge> `
+          )}
           <input
             id="user-input"
             class="form-control-multiselect"
@@ -75,9 +95,18 @@ export class MyComboBox extends MyDropdown {
             placeholder=${this.placeholder}
             .value=${this.value}
           />
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-</svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-search"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+            />
+          </svg>
         </div>
         <ul class="dropdown-menu" part="menu">
           ${this.filteredMenuList.length > 0
