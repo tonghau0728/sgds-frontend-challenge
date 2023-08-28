@@ -7,6 +7,8 @@ import "./components/my-dropdown-item";
 import { MyDropdownItem } from "./components/my-dropdown-item";
 import styles from "./my-combo-box.scss";
 
+const BACK_SPACE = "Backspace";
+
 type FilterFunction = (inputValue: string, menuItem: string) => boolean;
 
 @customElement("my-combo-box")
@@ -82,6 +84,14 @@ export class MyComboBox extends MyDropdown {
     );
   }
 
+  /** The function used to determine if entered backspace should remove the badge */
+  private _handleInputKeyDown(e: KeyboardEvent) {
+    if (!this.selectedItems.length || e.key !== BACK_SPACE || this.value !== "")
+      return;
+    this.hideMenu();
+    this.selectedItems = this.selectedItems.slice(0, -1);
+  }
+
   render() {
     this.filteredMenuList = this.menuList.filter(
       (item) =>
@@ -108,6 +118,7 @@ export class MyComboBox extends MyDropdown {
             class="form-control-multiselect"
             type="text"
             @input=${this._handleInputChange}
+            @keydown=${this._handleInputKeyDown}
             placeholder=${this.placeholder}
             .value=${this.value}
           />
