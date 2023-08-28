@@ -193,7 +193,10 @@ export class MyDropdown extends BaseElement {
       case ARROW_UP:
         e.preventDefault();
         if (!this.menuIsOpen) return this.bsDropdown.show();
-        if (this.prevDropdownItemNo < 0) {
+        if (
+          this.prevDropdownItemNo < 0 ||
+          this.prevDropdownItemNo > menuItems.length
+        ) {
           return this._setMenuItem(menuItems.length - 1, false);
         } else {
           return this._setMenuItem(this.prevDropdownItemNo, false);
